@@ -122,7 +122,7 @@ tar -xf mysql-5.7.12.tar.gz
 	fi
 cd mysql-5.7.12
 cmake -DCMAKE_INSTALL_PREFIX=/usr/local/Cellar/mysql \
--DMYSQL_DATADIR=/usr/local/mysql/data \
+-DMYSQL_DATADIR=/usr/local/Cellar/mysql/data \
 -DSYSCONFDIR=/etc \
 -DWITH_INNOBASE_STORAGE_ENGINE=1  \
 -DWITH_ARCHIVE_STORAGE_ENGINE=1  \
@@ -164,8 +164,8 @@ echo "basedir = /usr/local/Cellar/mysql" >> /usr/local/etc/my.cnf
 echo "datadir  = /usr/local/Cellar/mysql/data" >> /usr/local/etc/my.cnf
 
 echo 'PATH=/usr/local/Cellar/mysql/bin:$PATH' >> "${HOME}/.profile"
-
-/usr/local/Cellar/mysql/bin/mysqld  --initialize --user=mysql --basedir=/usr/local/Cellar/mysql --datadir=/usr/local/Cellar/mysql/data/ --explicit_defaults_for_timestamp
+source "${HOME}/.profile"
+/usr/local/Cellar/mysql/bin/mysqld  --initialize --user=mysql --basedir=/usr/local/Cellar/mysql --datadir=/usr/local/Cellar/mysql/data/ --explicit_defaults_for_timestamp 1> ./mysql-password
 
 rm -rf $2 ./mysql-5.7.12
 #############################################mysql######################################
