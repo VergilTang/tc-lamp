@@ -163,7 +163,7 @@ echo "socket = /usr/local/Cellar/mysql/data/mysql.sock" >> /usr/local/etc/my.cnf
 echo "basedir = /usr/local/Cellar/mysql" >> /usr/local/etc/my.cnf
 echo "datadir  = /usr/local/Cellar/mysql/data" >> /usr/local/etc/my.cnf
 
-echo 'PATH=/usr/local/Cellar/mysql/bin:$PATH' >> "$HOME/.profile"
+echo 'PATH=/usr/local/Cellar/mysql/bin:$PATH' >> "${HOME}/.profile"
 
 /usr/local/Cellar/mysql/bin/mysqld  --initialize --user=mysql --basedir=/usr/local/Cellar/mysql --datadir=/usr/local/Cellar/mysql/data/ --explicit_defaults_for_timestamp
 
@@ -173,7 +173,7 @@ rm -rf $2 ./mysql-5.7.12
 #需要python-dev
 configure 'libxml2-2.9.3.tar.gz' './libxml2-2.9.3' '--prefix=/usr/local/Cellar/libxml2' 'libxml2'
 ################################################libxml2############################################################
-exit
+
 ####################################################libcurl#######################################################
 configure 'curl-7.47.1.tar.gz' './curl-7.47.1' '--prefix=/usr/local/Cellar/libcurl' 'libcurl'
 ####################################################libcurl#######################################################
