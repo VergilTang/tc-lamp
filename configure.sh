@@ -107,7 +107,7 @@ configure() {
 	./configure $3
 	make && make install
 	cd ../
-	if [ $2 != './pcre-8.38' ]
+	if [ $4 != 'pcre' -o $4 != 'php5' ]
 		then
 		rm -rf $2
 	fi
@@ -153,7 +153,7 @@ cmake -DCMAKE_INSTALL_PREFIX=/usr/local/Cellar/mysql \
 -DOPTIMIZER_TRACE=1 \
 -DWITH_DEBUG=1 \
 -DDOWNLOAD_BOOST=1 \
--DWITH_BOOST="${HOME}/Dowloads/boost_1_59_0" \
+-DWITH_BOOST="${HOME}/Downloads/boost_1_59_0" \
 -DWITH_EMBEDDED_SERVER=OFF
 
 make
@@ -163,6 +163,7 @@ cd ../
 chown -R mysql:mysql /usr/local/Cellar/mysql
 cp ./mysql-5.7.12/support-files/my-default.cnf /usr/local/etc/my.cnf
 chown mysql:mysql /usr/local/etc/my.cnf
+chmod -R 777 /usr/local/Cellar/mysql
 
 echo "[client]" > /usr/local/etc/my.cnf
 echo "port = 3306" >> /usr/local/etc/my.cnf
@@ -270,6 +271,7 @@ configure 'freetype-2.4.0.tar.gz' './freetype-2.4.0' '--prefix=/usr/local/Cellar
 ################################################freetype############################################################
 ####################################################php#######################################################
 configure 'php-5.6.22.tar.gz' './php-5.6.22' "--prefix=/usr/local/Cellar/php5 --with-fpm-user=${nginx_fpm_user} --with-fpm-group=${nginx-fpm_group} --sysconfdir=/usr/local/etc/php5 --with-config-file-path=/usr/local/etc/php5 --with-config-file-scan-dir=/usr/local/etc/php5/conf.d --mandir=/usr/local/Cellar/php5/share/man --enable-calendar --enable-dba --enable-ftp --enable-gd-native-ttf --enable-mbregex --enable-mbstring --enable-shmop --enable-soap --enable-sockets --enable-sysvmsg --enable-sysvsem --enable-sysvshm --with-freetype-dir=/usr/local/Cellar/freetype --with-gd --with-gettext=/usr/local/Cellar/gettext --with-iconv-dir=/usr --with-jpeg-dir=/usr/lib --with-mhash=/usr/local/Cellar/mhash --with-mcrypt=/usr/local/Cellar/libmcrypt --with-png-dir=/usr/local/Cellar/libpng --with-xmlrpc --with-zlib=/usr --without-gmp --without-snmp --with-libxml-dir=/usr/local/Cellar/libxml2 --libexecdir=/usr/local/Cellar/php5/libexec --with-bz2=/usr/local --enable-debug --with-openssl=/usr/local/Cellar/openssl --enable-fpm --with-fpm-user=${nginx_fpm_user} --with-fpm-group=${nginx_fpm_group} --with-curl=/usr/local/Cellar/libcurl --with-mysql-sock=/tmp/mysql.sock --with-mysqli=mysqlnd --with-mysql=mysqlnd --with-pdo-mysql=mysqlnd --enable-pcntl --enable-phpdbg --enable-zend-signals" 'php5'
+cp "${configure_path}/php-5.6.22/php.ini-development" /usr/local/etc/php5/
 ####################################################php#########################################################
 
 
