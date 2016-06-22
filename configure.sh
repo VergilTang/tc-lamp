@@ -112,7 +112,7 @@ configure() {
 	fi
 	return 0
 }
-#############################################mysql######################################
+
 groupadd -r mysql && useradd -r -g mysql -s /bin/false -M mysql
 tar -xf mysql-5.7.12.tar.gz
 	if [ $? -ne 0 ]
@@ -168,16 +168,12 @@ source "${HOME}/.profile"
 /usr/local/Cellar/mysql/bin/mysqld  --initialize --user=mysql --basedir=/usr/local/Cellar/mysql --datadir=/usr/local/Cellar/mysql/data/ --explicit_defaults_for_timestamp 1> ./mysql-password
 
 rm -rf $2 ./mysql-5.7.12
-#############################################mysql######################################
-################################################libxml2############################################################
+#mysql-end
 #需要python-dev
 configure 'libxml2-2.9.3.tar.gz' './libxml2-2.9.3' '--prefix=/usr/local/Cellar/libxml2' 'libxml2'
-################################################libxml2############################################################
 
-####################################################libcurl#######################################################
 configure 'curl-7.47.1.tar.gz' './curl-7.47.1' '--prefix=/usr/local/Cellar/libcurl' 'libcurl'
-####################################################libcurl#######################################################
-####################################################bzip2#######################################################
+
 #configure 'bzip2-1.0.6.tar.gz' './bzip2-1.0.6' '--prefix=/usr/local/Cellar/bzip2' 'bzip2'
 if [ ! -s /usr/local/bin/bzip2 ]
 	then
@@ -188,11 +184,9 @@ if [ ! -s /usr/local/bin/bzip2 ]
 	cd ../
 	rm -rf ./bzip2-1.0.6
 fi
-####################################################bzip2#######################################################
-####################################################pcre#######################################################
+
 configure 'pcre-8.38.tar.gz' './pcre-8.38' '--prefix=/usr/local/Cellar/pcre' 'pcre'
-####################################################pcre#######################################################
-################################################openssl##########################################################
+
 if [ `ls /usr/local/Cellar/openssl | wc -l` -eq 0 ]
 	then
 	`tar -xf openssl-1.0.2g.tar.gz`
@@ -208,15 +202,9 @@ if [ `ls /usr/local/Cellar/openssl | wc -l` -eq 0 ]
 	cd ../
 	#rm -rf ./openssl-1.0.2g
 fi
-####################################################openssl#######################################################
-################################################libpng##########################################################
-#需要zlib
-#export LDFLAGS="-L/usr/local/Cellar/zlib/lib"		#there is not space between -L and the Dir
-#export CPPFLAGS="-I/usr/local/Cellar/zlib/include"
-#configure 'libpng-1.6.21.tar.gz' './libpng-1.6.21' '--prefix=/usr/local/Cellar/libpng --with-zlib-prefix=/usr/local/Cellar/zlib/'
+
 configure 'libpng-1.6.21.tar.gz' './libpng-1.6.21' '--prefix=/usr/local/Cellar/libpng' 'libpng'
-################################################libpng##########################################################
-####################################################nginx#######################################################
+
 if [ ! `cat /etc/group | grep ${nginx_fpm_group}` ]
 	then
 	groupadd -g 1002 ${nginx_fpm_group}
@@ -234,30 +222,22 @@ else
 fi
 chmod u+s "/usr/local/Cellar/nginx/""${path}"
 ln -s "/usr/local/Cellar/nginx/""${path}" "/usr/local/""${path}"
-####################################################nginx#######################################################
-################################################libmcrypt############################################################
+
 configure 'libmcrypt-2.5.7.tar.gz' './libmcrypt-2.5.7' '--prefix=/usr/local/Cellar/libmcrypt' 'libmcrypt'
-################################################libmcrypt############################################################
-################################################mhash############################################################
+
 configure 'mhash-0.9.9.9.tar.gz' './mhash-0.9.9.9' '--prefix=/usr/local/Cellar/mhash' 'mhash'
-################################################mhash############################################################
-################################################gettext############################################################
+
 configure 'gettext-0.19.7.tar.gz' './gettext-0.19.7' '--prefix=/usr/local/Cellar/gettext' 'gettext'
-################################################gettext############################################################
-################################################jpeg############################################################
+
 # if [ ! -d /usr/local/Cellar/libjpeg/bin ]
 # 	then
 # 	mkdir  /usr/local/Cellar/libjpeg/bin /usr/local/Cellar/libjpeg/include /usr/local/Cellar/libjpeg/lib
 # 	mkdir -p /usr/local/Cellar/libjpeg/man/man1
 # fi
 # configure 'jpegsrc.v6b.tar.gz' './jpeg-6b' '--prefix=/usr/local/Cellar/libjpeg' 'libjpeg'
-################################################jpeg############################################################
-################################################freetds############################################################
+
 #configure 'freetds-0.91.100.tar.gz' './freetds-0.91.100' '--prefix=/usr/local/Cellar/freetds' 'freetds'
-################################################freetds############################################################
-################################################freetype############################################################
+
 configure 'freetype-2.4.0.tar.gz' './freetype-2.4.0' '--prefix=/usr/local/Cellar/freetype' 'freetype'
-################################################freetype############################################################
-####################################################php#######################################################
+
 configure 'php-5.6.22.tar.gz' './php-5.6.22' "--prefix=/usr/local/Cellar/php5 --with-fpm-user=${nginx_fpm_user} --with-fpm-group=${nginx-fpm_group} --sysconfdir=/usr/local/etc/php5 --with-config-file-path=/usr/local/etc/php5 --with-config-file-scan-dir=/usr/local/etc/php5/conf.d --mandir=/usr/local/Cellar/php5/share/man --enable-calendar --enable-dba --enable-ftp --enable-gd-native-ttf --enable-mbregex --enable-mbstring --enable-shmop --enable-soap --enable-sockets --enable-sysvmsg --enable-sysvsem --enable-sysvshm --with-freetype-dir=/usr/local/Cellar/freetype --with-gd --with-gettext=/usr/local/Cellar/gettext --with-iconv-dir=/usr --with-jpeg-dir=/usr/lib --with-mhash=/usr/local/Cellar/mhash --with-mcrypt=/usr/local/Cellar/libmcrypt --with-png-dir=/usr/local/Cellar/libpng --with-xmlrpc --with-zlib=/usr --without-gmp --without-snmp --with-libxml-dir=/usr/local/Cellar/libxml2 --libexecdir=/usr/local/Cellar/php5/libexec --with-bz2=/usr/local --enable-debug --with-openssl=/usr/local/Cellar/openssl --enable-fpm --with-fpm-user=${nginx_fpm_user} --with-fpm-group=${nginx_fpm_group} --with-curl=/usr/local/Cellar/libcurl --with-mysql-sock=/tmp/mysql.sock --with-mysqli=mysqlnd --with-mysql=mysqlnd --with-pdo-mysql=mysqlnd --enable-pcntl --enable-phpdbg --enable-zend-signals" 'php5'
-####################################################php#########################################################
