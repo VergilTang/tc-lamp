@@ -67,7 +67,7 @@ if [ $change_source -eq 1 ]
 	apt-get update
 fi
 apt-get -y install build-essential zlib1g-dev python-dev libjpeg-dev
-
+apt-get -y install make cmake gcc g++ bison libncurses5-dev libboost-dev
 if [ ! -d /usr/local/Cellar ]
 	then
 	mkdir -p /usr/local/Cellar/openssl
@@ -86,6 +86,7 @@ if [ ! -d /usr/local/Cellar ]
 	mkdir /usr/local/Cellar/php5
 	mkdir  /usr/local/etc/php5
 	mkdir /usr/local/etc/nginx
+	mkdir /usr/local/Cellar/mysql
 fi	
 configure() {
 	#通过bin和sbin目录下的文件个数查看是否已经安装了软件
@@ -97,7 +98,7 @@ configure() {
 	tar -xf $1
 	if [ $? -ne 0 ]
 		then	
-		echo "tar {$4} error"
+		echo "tar ${4} error"
 		exit
 	fi
 	#rm -rf $1
@@ -111,6 +112,63 @@ configure() {
 	fi
 	return 0
 }
+#############################################mysql######################################
+groupadd -r mysql && useradd -r -g mysql -s /bin/false -M mysql
+tar -xf mysql-5.7.12.tar.gz
+	if [ $? -ne 0 ]
+		then	
+		echo "tar mysql error"
+		exit
+	fi
+cd mysql-5.7.12
+cmake -DCMAKE_INSTALL_PREFIX=/usr/local/Cellar/mysql \
+-DMYSQL_DATADIR=/usr/local/mysql/data \
+-DSYSCONFDIR=/etc \
+-DWITH_INNOBASE_STORAGE_ENGINE=1  \
+-DWITH_ARCHIVE_STORAGE_ENGINE=1  \
+-DWITH_BLACKHOLE_STORAGE_ENGINE=1 \
+-DWITH_PARTITION_STORAGE_ENGINE=1 \
+-DWITH_PERFSCHEMA_STORAGE_ENGINE=1 \
+-DWITHOUT_EXAMPLE_STORAGE_ENGINE=1 \
+-DWITHOUT_FEDERATED_STORAGE_ENGINE=1 \
+-DDEFAULT_CHARSET=utf8 \
+-DDEFAULT_COLLATION=utf8_general_ci \
+-DWITH_EXTRA_CHARSETS=all \
+-DENABLED_LOCAL_INFILE=1 \
+-DWITH_READLINE=1 \
+-DMYSQL_UNIX_ADDR=/usr/local/mysql/mysql.sock \
+-DMYSQL_TCP_PORT=3306 \
+-DMYSQL_USER=mysql \
+-DCOMPILATION_COMMENT="lq-edition" \
+-DENABLE_DTRACE=0 \
+-DOPTIMIZER_TRACE=1 \
+-DWITH_DEBUG=1 \
+-DDOWNLOAD_BOOST=1 \
+-DWITH_BOOST=/home/ubuntu/download/boost_1_59_0 \
+-DWITH_EMBEDDED_SERVER=OFF
+
+make && make install
+cd ../
+
+chown -R mysql:mysql /usr/local/Cellar/mysql
+cp ./mysql-5.7.12/support-files/my-default.cnf /usr/local/etc/my.cnf
+sudo chown mysql:mysql /usr/local/etc/my.cnf
+
+echo "[client]" > /usr/local/etc/my.cnf
+echo "port = 3306" >> /usr/local/etc/my.cnf
+echo "socket = /usr/local/Cellar/mysql/data/mysql.sock" >> /usr/local/etc/my.cnf
+echo "" >> /usr/local/etc/my.cnf
+echo "[mysqld]" >> /usr/local/etc/my.cnf
+echo "socket = /usr/local/Cellar/mysql/data/mysql.sock" >> /usr/local/etc/my.cnf
+echo "basedir = /usr/local/Cellar/mysql" >> /usr/local/etc/my.cnf
+echo "datadir  = /usr/local/Cellar/mysql/data" >> /usr/local/etc/my.cnf
+
+echo 'PATH=/usr/local/Cellar/mysql/bin:$PATH' >> "$HOME/.profile"
+
+/usr/local/Cellar/mysql/bin/mysqld  --initialize --user=mysql --basedir=/usr/local/Cellar/mysql --datadir=/usr/local/Cellar/mysql/data/ --explicit_defaults_for_timestamp
+
+rm -rf $2 ./mysql-5.7.12
+#############################################mysql######################################
 ################################################libxml2############################################################
 #需要python-dev
 configure 'libxml2-2.9.3.tar.gz' './libxml2-2.9.3' '--prefix=/usr/local/Cellar/libxml2' 'libxml2'
