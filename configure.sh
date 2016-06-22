@@ -2,6 +2,7 @@
 #use root please
 nginx_fpm_user='_www'
 nginx_fpm_group='_www'
+configure_path=`pwd`
 # while getopt "u:g:h" opt
 # do
 # 	case $opt in 
@@ -113,7 +114,15 @@ configure() {
 	return 0
 }
 #############################################mysql######################################
-groupadd -r mysql && useradd -r -g mysql -s /bin/false -M mysql
+if [ ! `cat /etc/group | grep mysql` ]
+then
+	groupadd -r mysql
+fi
+if [ ! `id -u mysql` ]
+then
+	useradd -r -g mysql -s /bin/false -M mysql
+fi	
+
 tar -xf mysql-5.7.12.tar.gz
 	if [ $? -ne 0 ]
 		then	
@@ -136,7 +145,7 @@ cmake -DCMAKE_INSTALL_PREFIX=/usr/local/Cellar/mysql \
 -DWITH_EXTRA_CHARSETS=all \
 -DENABLED_LOCAL_INFILE=1 \
 -DWITH_READLINE=1 \
--DMYSQL_UNIX_ADDR=/usr/local/mysql/mysql.sock \
+-DMYSQL_UNIX_ADDR=/usr/local/Cellar/mysql/mysql.sock \
 -DMYSQL_TCP_PORT=3306 \
 -DMYSQL_USER=mysql \
 -DCOMPILATION_COMMENT="lq-edition" \
@@ -144,7 +153,7 @@ cmake -DCMAKE_INSTALL_PREFIX=/usr/local/Cellar/mysql \
 -DOPTIMIZER_TRACE=1 \
 -DWITH_DEBUG=1 \
 -DDOWNLOAD_BOOST=1 \
--DWITH_BOOST=/home/ubuntu/download/boost_1_59_0 \
+-DWITH_BOOST="${HOME}/Dowloads/boost_1_59_0" \
 -DWITH_EMBEDDED_SERVER=OFF
 
 make && make install
@@ -261,3 +270,12 @@ configure 'freetype-2.4.0.tar.gz' './freetype-2.4.0' '--prefix=/usr/local/Cellar
 ####################################################php#######################################################
 configure 'php-5.6.22.tar.gz' './php-5.6.22' "--prefix=/usr/local/Cellar/php5 --with-fpm-user=${nginx_fpm_user} --with-fpm-group=${nginx-fpm_group} --sysconfdir=/usr/local/etc/php5 --with-config-file-path=/usr/local/etc/php5 --with-config-file-scan-dir=/usr/local/etc/php5/conf.d --mandir=/usr/local/Cellar/php5/share/man --enable-calendar --enable-dba --enable-ftp --enable-gd-native-ttf --enable-mbregex --enable-mbstring --enable-shmop --enable-soap --enable-sockets --enable-sysvmsg --enable-sysvsem --enable-sysvshm --with-freetype-dir=/usr/local/Cellar/freetype --with-gd --with-gettext=/usr/local/Cellar/gettext --with-iconv-dir=/usr --with-jpeg-dir=/usr/lib --with-mhash=/usr/local/Cellar/mhash --with-mcrypt=/usr/local/Cellar/libmcrypt --with-png-dir=/usr/local/Cellar/libpng --with-xmlrpc --with-zlib=/usr --without-gmp --without-snmp --with-libxml-dir=/usr/local/Cellar/libxml2 --libexecdir=/usr/local/Cellar/php5/libexec --with-bz2=/usr/local --enable-debug --with-openssl=/usr/local/Cellar/openssl --enable-fpm --with-fpm-user=${nginx_fpm_user} --with-fpm-group=${nginx_fpm_group} --with-curl=/usr/local/Cellar/libcurl --with-mysql-sock=/tmp/mysql.sock --with-mysqli=mysqlnd --with-mysql=mysqlnd --with-pdo-mysql=mysqlnd --enable-pcntl --enable-phpdbg --enable-zend-signals" 'php5'
 ####################################################php#########################################################
+
+
+
+echo "-------------------------------------------"
+echo "it's end of the configure,**warning**"
+echo "There is the initializing password of mysql:"
+echo "${configure_path}/mysql-password"
+echo "There is the config file of PHP and nginx:"
+echo "/usr/local/etc"
