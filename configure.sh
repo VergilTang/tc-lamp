@@ -89,7 +89,7 @@ if [ ! -d /usr/local/Cellar ]
 fi	
 configure() {
 	#通过bin和sbin目录下的文件个数查看是否已经安装了软件
-	if [ `ls /usr/local/Cellar/${4}/sbin | wc -l` -ne 0 -o `ls /usr/local/Cellar/${4}/include | wc -l` -ne 0 ]
+	if [ `ls /usr/local/Cellar/${4}/sbin 2> /dev/null | wc -l` -ne 0 -o `ls /usr/local/Cellar/${4}/include 2> /dev/null | wc -l` -ne 0 ]
 	#if [[ `ls /usr/local/Cellar/${4}/sbin | wc -l` -ne 0 || `ls /usr/local/Cellar/${4}/include | wc -l` -ne 0 ]]
 		then
 		return 1
