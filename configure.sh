@@ -156,12 +156,13 @@ cmake -DCMAKE_INSTALL_PREFIX=/usr/local/Cellar/mysql \
 -DWITH_BOOST="${HOME}/Dowloads/boost_1_59_0" \
 -DWITH_EMBEDDED_SERVER=OFF
 
-make && make install
+make
+make install 1> ./mysql-password
 cd ../
 
 chown -R mysql:mysql /usr/local/Cellar/mysql
 cp ./mysql-5.7.12/support-files/my-default.cnf /usr/local/etc/my.cnf
-sudo chown mysql:mysql /usr/local/etc/my.cnf
+chown mysql:mysql /usr/local/etc/my.cnf
 
 echo "[client]" > /usr/local/etc/my.cnf
 echo "port = 3306" >> /usr/local/etc/my.cnf
@@ -174,7 +175,7 @@ echo "datadir  = /usr/local/Cellar/mysql/data" >> /usr/local/etc/my.cnf
 
 echo 'PATH=/usr/local/Cellar/mysql/bin:$PATH' >> "${HOME}/.profile"
 source "${HOME}/.profile"
-/usr/local/Cellar/mysql/bin/mysqld  --initialize --user=mysql --basedir=/usr/local/Cellar/mysql --datadir=/usr/local/Cellar/mysql/data/ --explicit_defaults_for_timestamp 1> ./mysql-password
+/usr/local/Cellar/mysql/bin/mysqld  --initialize --user=mysql --basedir=/usr/local/Cellar/mysql --datadir=/usr/local/Cellar/mysql/data/ --explicit_defaults_for_timestamp 1>> ./mysql-password
 
 rm -rf $2 ./mysql-5.7.12
 #############################################mysql######################################
