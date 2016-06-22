@@ -40,7 +40,7 @@ do
 		h|--help)
 			echo "params:"
 			echo "--with-change-source set up your apt-get resource to Chinese resource"
-			echo "-h, --help		display this help and exit"
+			echo "-h, --help		   display this help and exit"
 			echo "-u, --with-user 		the user of nginx and php-fpm,default:_www"
 			echo "-g, --with-group 		the group of nginx and php-fpm,default:_www"
 			exit 0
@@ -66,11 +66,8 @@ if [ $change_source -eq 1 ]
 	echo "deb-src http://mirrors.aliyun.com/ubuntu/ vivid-backports main restricted universe multiverse" >> /etc/apt/sources.list
 	apt-get update
 fi
-which python 2> ./error.log
-if [ $? -ne 0 ]
-	then
-	apt-get -y install build-essential zlib1g-dev python-dev libjpeg-dev
-fi
+apt-get -y install build-essential zlib1g-dev python-dev libjpeg-dev
+
 if [ ! -d /usr/local/Cellar ]
 	then
 	mkdir -p /usr/local/Cellar/openssl
