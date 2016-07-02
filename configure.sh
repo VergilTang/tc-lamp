@@ -21,7 +21,8 @@ configure_path=`pwd`
 # done
 change_source=0
 with_out_mysql=0
-set -- `getopt -o hu:g: -l with-change-source,with-user:,with-group,help,with-out-mysql -- $*`
+with_mssql=0
+set -- `getopt -o hu:g: -l with-change-source,with-user:,with-group,help,with-out-mysql,with-mssql -- $*`
 while [ ! -z $1 ]
 do
 	case $1 in
@@ -41,6 +42,10 @@ do
 			;;
 		--with-out-mysql)
 			with_out_mysql=1
+			shift
+			;;
+		--with-mssql)
+			with_mssql=1
 			shift
 			;;
 		h|--help)
@@ -271,13 +276,19 @@ configure 'gettext-0.19.7.tar.gz' './gettext-0.19.7' '--prefix=/usr/local/Cellar
 # configure 'jpegsrc.v6b.tar.gz' './jpeg-6b' '--prefix=/usr/local/Cellar/libjpeg' 'libjpeg'
 ################################################jpeg############################################################
 ################################################freetds############################################################
-#configure 'freetds-0.91.100.tar.gz' './freetds-0.91.100' '--prefix=/usr/local/Cellar/freetds' 'freetds'
+if [with_mssql -eq 1]
+configure 'freetds-0.91.100.tar.gz' './freetds-0.91.100' '--prefix=/usr/local/Cellar/freetds' 'freetds'
+fi
 ################################################freetds############################################################
 ################################################freetype############################################################
 configure 'freetype-2.4.0.tar.gz' './freetype-2.4.0' '--prefix=/usr/local/Cellar/freetype' 'freetype'
 ################################################freetype############################################################
 ####################################################php#######################################################
-configure 'php-5.6.22.tar.gz' './php-5.6.22' "--prefix=/usr/local/Cellar/php5 --with-fpm-user=${nginx_fpm_user} --with-fpm-group=${nginx-fpm_group} --sysconfdir=/usr/local/etc/php5 --with-config-file-path=/usr/local/etc/php5 --with-config-file-scan-dir=/usr/local/etc/php5/conf.d --mandir=/usr/local/Cellar/php5/share/man --enable-calendar --enable-dba --enable-ftp --enable-gd-native-ttf --enable-mbregex --enable-mbstring --enable-shmop --enable-soap --enable-sockets --enable-sysvmsg --enable-sysvsem --enable-sysvshm --with-freetype-dir=/usr/local/Cellar/freetype --with-gd --with-gettext=/usr/local/Cellar/gettext --with-iconv-dir=/usr --with-jpeg-dir=/usr/lib --with-mhash=/usr/local/Cellar/mhash --with-mcrypt=/usr/local/Cellar/libmcrypt --with-png-dir=/usr/local/Cellar/libpng --with-xmlrpc --with-zlib=/usr --without-gmp --without-snmp --with-libxml-dir=/usr/local/Cellar/libxml2 --libexecdir=/usr/local/Cellar/php5/libexec --with-bz2=/usr/local --enable-debug --with-openssl=/usr/local/Cellar/openssl --enable-fpm --with-fpm-user=${nginx_fpm_user} --with-fpm-group=${nginx_fpm_group} --with-curl=/usr/local/Cellar/libcurl --with-mysql-sock=/tmp/mysql.sock --with-mysqli=mysqlnd --with-mysql=mysqlnd --with-pdo-mysql=mysqlnd --enable-pcntl --enable-phpdbg --enable-zend-signals" 'php5'
+php_configure_command="--prefix=/usr/local/Cellar/php5 --with-fpm-user=${nginx_fpm_user} --with-fpm-group=${nginx-fpm_group} --sysconfdir=/usr/local/etc/php5 --with-config-file-path=/usr/local/etc/php5 --with-config-file-scan-dir=/usr/local/etc/php5/conf.d --mandir=/usr/local/Cellar/php5/share/man --enable-calendar --enable-dba --enable-ftp --enable-gd-native-ttf --enable-mbregex --enable-mbstring --enable-shmop --enable-soap --enable-sockets --enable-sysvmsg --enable-sysvsem --enable-sysvshm --with-freetype-dir=/usr/local/Cellar/freetype --with-gd --with-gettext=/usr/local/Cellar/gettext --with-iconv-dir=/usr --with-jpeg-dir=/usr/lib --with-mhash=/usr/local/Cellar/mhash --with-mcrypt=/usr/local/Cellar/libmcrypt --with-png-dir=/usr/local/Cellar/libpng --with-xmlrpc --with-zlib=/usr --without-gmp --without-snmp --with-libxml-dir=/usr/local/Cellar/libxml2 --libexecdir=/usr/local/Cellar/php5/libexec --with-bz2=/usr/local --enable-debug --with-openssl=/usr/local/Cellar/openssl --enable-fpm --with-fpm-user=${nginx_fpm_user} --with-fpm-group=${nginx_fpm_group} --with-curl=/usr/local/Cellar/libcurl --with-mysql-sock=/tmp/mysql.sock --with-mysqli=mysqlnd --with-mysql=mysqlnd --with-pdo-mysql=mysqlnd --enable-pcntl --enable-phpdbg --enable-zend-signals"
+if [with_mssql -eq 1]
+	php_configure_command="${php_configure_command} --with-pdo-dblib=/usr/local/Cellar/freetds"
+fi
+configure 'php-5.6.22.tar.gz' './php-5.6.22' $php_configure_command 'php5'
 cp "${configure_path}/php-5.6.22/php.ini-development" /usr/local/etc/php5/
 ####################################################php#########################################################
 
@@ -289,3 +300,5 @@ echo "There is the initializing password of mysql:"
 echo "${configure_path}/mysql-password"
 echo "There is the config file of PHP and nginx:"
 echo "/usr/local/etc"
+echo "please run those commend in commend line:"
+echo "source ${HOME}/.profile"
