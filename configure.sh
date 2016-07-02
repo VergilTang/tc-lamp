@@ -20,7 +20,8 @@ configure_path=`pwd`
 # 	esac
 # done
 change_source=0
-set -- `getopt -o hu:g: -l with-change-source,with-user:,with-group,help -- $*`
+with_out_mysql=0
+set -- `getopt -o hu:g: -l with-change-source,with-user:,with-group,help,with-out-mysql -- $*`
 while [ ! -z $1 ]
 do
 	case $1 in
@@ -37,7 +38,11 @@ do
 		--with-change-source)
 			change_source=1
 			shift
-			;;	
+			;;
+		--with-out-mysql)
+			with_out_mysql=1
+			shift
+			;;
 		h|--help)
 			echo "params:"
 			echo "--with-change-source set up your apt-get resource to Chinese resource"
@@ -114,71 +119,73 @@ configure() {
 	return 0
 }
 #############################################mysql######################################
-if [ ! `cat /etc/group | grep mysql` ]
-then
-	groupadd -r mysql
-fi
-if [ ! `id -u mysql` ]
-then
-	useradd -r -g mysql -s /bin/false -M mysql
-fi	
-
-tar -xf mysql-5.7.12.tar.gz
-	if [ $? -ne 0 ]
-		then	
-		echo "tar mysql error"
-		exit
+if [$with_out_mysql -eq 0]
+	if [ ! `cat /etc/group | grep mysql` ]
+	then
+		groupadd -r mysql
 	fi
-cd mysql-5.7.12
-cmake -DCMAKE_INSTALL_PREFIX=/usr/local/Cellar/mysql \
--DMYSQL_DATADIR=/usr/local/Cellar/mysql/data \
--DSYSCONFDIR=/etc \
--DWITH_INNOBASE_STORAGE_ENGINE=1  \
--DWITH_ARCHIVE_STORAGE_ENGINE=1  \
--DWITH_BLACKHOLE_STORAGE_ENGINE=1 \
--DWITH_PARTITION_STORAGE_ENGINE=1 \
--DWITH_PERFSCHEMA_STORAGE_ENGINE=1 \
--DWITHOUT_EXAMPLE_STORAGE_ENGINE=1 \
--DWITHOUT_FEDERATED_STORAGE_ENGINE=1 \
--DDEFAULT_CHARSET=utf8 \
--DDEFAULT_COLLATION=utf8_general_ci \
--DWITH_EXTRA_CHARSETS=all \
--DENABLED_LOCAL_INFILE=1 \
--DWITH_READLINE=1 \
--DMYSQL_UNIX_ADDR=/usr/local/Cellar/mysql/mysql.sock \
--DMYSQL_TCP_PORT=3306 \
--DMYSQL_USER=mysql \
--DCOMPILATION_COMMENT="lq-edition" \
--DENABLE_DTRACE=0 \
--DOPTIMIZER_TRACE=1 \
--DWITH_DEBUG=1 \
--DDOWNLOAD_BOOST=1 \
--DWITH_BOOST="${HOME}/Downloads/boost_1_59_0" \
--DWITH_EMBEDDED_SERVER=OFF
+	if [ ! `id -u mysql` ]
+	then
+		useradd -r -g mysql -s /bin/false -M mysql
+	fi	
 
-make
-make install 1> ./mysql-password
-cd ../
+	tar -xf mysql-5.7.12.tar.gz
+		if [ $? -ne 0 ]
+			then	
+			echo "tar mysql error"
+			exit
+		fi
+	cd mysql-5.7.12
+	cmake -DCMAKE_INSTALL_PREFIX=/usr/local/Cellar/mysql \
+	-DMYSQL_DATADIR=/usr/local/Cellar/mysql/data \
+	-DSYSCONFDIR=/etc \
+	-DWITH_INNOBASE_STORAGE_ENGINE=1  \
+	-DWITH_ARCHIVE_STORAGE_ENGINE=1  \
+	-DWITH_BLACKHOLE_STORAGE_ENGINE=1 \
+	-DWITH_PARTITION_STORAGE_ENGINE=1 \
+	-DWITH_PERFSCHEMA_STORAGE_ENGINE=1 \
+	-DWITHOUT_EXAMPLE_STORAGE_ENGINE=1 \
+	-DWITHOUT_FEDERATED_STORAGE_ENGINE=1 \
+	-DDEFAULT_CHARSET=utf8 \
+	-DDEFAULT_COLLATION=utf8_general_ci \
+	-DWITH_EXTRA_CHARSETS=all \
+	-DENABLED_LOCAL_INFILE=1 \
+	-DWITH_READLINE=1 \
+	-DMYSQL_UNIX_ADDR=/usr/local/Cellar/mysql/mysql.sock \
+	-DMYSQL_TCP_PORT=3306 \
+	-DMYSQL_USER=mysql \
+	-DCOMPILATION_COMMENT="lq-edition" \
+	-DENABLE_DTRACE=0 \
+	-DOPTIMIZER_TRACE=1 \
+	-DWITH_DEBUG=1 \
+	-DDOWNLOAD_BOOST=1 \
+	-DWITH_BOOST="${HOME}/Downloads/boost_1_59_0" \
+	-DWITH_EMBEDDED_SERVER=OFF
 
-chown -R mysql:mysql /usr/local/Cellar/mysql
-cp ./mysql-5.7.12/support-files/my-default.cnf /usr/local/etc/my.cnf
-chown mysql:mysql /usr/local/etc/my.cnf
-chmod -R 777 /usr/local/Cellar/mysql
+	make
+	make install
+	cd ../
 
-echo "[client]" > /usr/local/etc/my.cnf
-echo "port = 3306" >> /usr/local/etc/my.cnf
-echo "socket = /usr/local/Cellar/mysql/data/mysql.sock" >> /usr/local/etc/my.cnf
-echo "" >> /usr/local/etc/my.cnf
-echo "[mysqld]" >> /usr/local/etc/my.cnf
-echo "socket = /usr/local/Cellar/mysql/data/mysql.sock" >> /usr/local/etc/my.cnf
-echo "basedir = /usr/local/Cellar/mysql" >> /usr/local/etc/my.cnf
-echo "datadir  = /usr/local/Cellar/mysql/data" >> /usr/local/etc/my.cnf
+	chown -R mysql:mysql /usr/local/Cellar/mysql
+	cp ./mysql-5.7.12/support-files/my-default.cnf /usr/local/etc/my.cnf
+	chown mysql:mysql /usr/local/etc/my.cnf
+	chmod -R 777 /usr/local/Cellar/mysql
 
-echo 'PATH=/usr/local/Cellar/mysql/bin:$PATH' >> "${HOME}/.profile"
-source "${HOME}/.profile"
-/usr/local/Cellar/mysql/bin/mysqld  --initialize --user=mysql --basedir=/usr/local/Cellar/mysql --datadir=/usr/local/Cellar/mysql/data/ --explicit_defaults_for_timestamp 1>> ./mysql-password
+	echo "[client]" > /usr/local/etc/my.cnf
+	echo "port = 3306" >> /usr/local/etc/my.cnf
+	echo "socket = /usr/local/Cellar/mysql/data/mysql.sock" >> /usr/local/etc/my.cnf
+	echo "" >> /usr/local/etc/my.cnf
+	echo "[mysqld]" >> /usr/local/etc/my.cnf
+	echo "socket = /usr/local/Cellar/mysql/data/mysql.sock" >> /usr/local/etc/my.cnf
+	echo "basedir = /usr/local/Cellar/mysql" >> /usr/local/etc/my.cnf
+	echo "datadir  = /usr/local/Cellar/mysql/data" >> /usr/local/etc/my.cnf
 
-rm -rf $2 ./mysql-5.7.12
+	echo 'PATH=/usr/local/Cellar/mysql/bin:$PATH' >> "${HOME}/.profile"
+	source "${HOME}/.profile"
+	/usr/local/Cellar/mysql/bin/mysqld  --initialize --initialize-file=/usr/local/etc/my.cnf --user=mysql --basedir=/usr/local/Cellar/mysql --datadir=/usr/local/Cellar/mysql/data/ --explicit_defaults_for_timestamp 2> ./mysql-password
+
+	rm -rf $2 ./mysql-5.7.12
+fi	
 #############################################mysql######################################
 ################################################libxml2############################################################
 #需要python-dev
