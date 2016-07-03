@@ -50,7 +50,8 @@ do
 			;;
 		h|--help)
 			echo "params:"
-			echo "--with-change-source set up your apt-get resource to Chinese resource"
+			echo "--with-change-source     set up your apt-get resource to Chinese resource"
+			echo "with-out-mysql        do not configure mysql"
 			echo "-h, --help		   display this help and exit"
 			echo "-u, --with-user 		the user of nginx and php-fpm,default:_www"
 			echo "-g, --with-group 		the group of nginx and php-fpm,default:_www"
@@ -278,6 +279,7 @@ configure 'gettext-0.19.7.tar.gz' './gettext-0.19.7' '--prefix=/usr/local/Cellar
 ################################################jpeg############################################################
 ################################################freetds############################################################
 if [with_mssql -eq 1]
+then	
 configure 'freetds-0.91.100.tar.gz' './freetds-0.91.100' '--prefix=/usr/local/Cellar/freetds' 'freetds'
 fi
 ################################################freetds############################################################
