@@ -289,11 +289,12 @@ configure 'freetype-2.4.0.tar.gz' './freetype-2.4.0' '--prefix=/usr/local/Cellar
 ################################################freetype############################################################
 ####################################################php#######################################################
 php_configure_command="--prefix=/usr/local/Cellar/php5 --with-fpm-user=${nginx_fpm_user} --with-fpm-group=${nginx-fpm_group} --sysconfdir=/usr/local/etc/php5 --with-config-file-path=/usr/local/etc/php5 --with-config-file-scan-dir=/usr/local/etc/php5/conf.d --mandir=/usr/local/Cellar/php5/share/man --enable-calendar --enable-dba --enable-ftp --enable-gd-native-ttf --enable-mbregex --enable-mbstring --enable-shmop --enable-soap --enable-sockets --enable-sysvmsg --enable-sysvsem --enable-sysvshm --with-freetype-dir=/usr/local/Cellar/freetype --with-gd --with-gettext=/usr/local/Cellar/gettext --with-iconv-dir=/usr --with-jpeg-dir=/usr/lib --with-mhash=/usr/local/Cellar/mhash --with-mcrypt=/usr/local/Cellar/libmcrypt --with-png-dir=/usr/local/Cellar/libpng --with-xmlrpc --with-zlib=/usr --without-gmp --without-snmp --with-libxml-dir=/usr/local/Cellar/libxml2 --libexecdir=/usr/local/Cellar/php5/libexec --with-bz2=/usr/local --enable-debug --with-openssl=/usr/local/Cellar/openssl --enable-fpm --with-curl=/usr/local/Cellar/libcurl --with-mysql-sock=/tmp/mysql.sock --with-mysqli=mysqlnd --with-mysql=mysqlnd --with-pdo-mysql=mysqlnd --enable-pcntl --enable-phpdbg --enable-zend-signals"
-if [$with_mssql -eq 1]
+if [ $with_mssql -eq 1 ]
 then	
 	php_configure_command="${php_configure_command} --with-pdo-dblib=/usr/local/Cellar/freetds"
 fi
-configure 'php-5.6.22.tar.gz' './php-5.6.22' $php_configure_command 'php5'
+#这里必须用"${php_configure_command}"而不是$php_configure_command，用$php_configure_command的话这个字符串里面的所有选项都会被当做configure函数的选项
+configure 'php-5.6.22.tar.gz' './php-5.6.22' "${php_configure_command}" 'php5'
 cp "${configure_path}/php-5.6.22/php.ini-development" /usr/local/etc/php5/
 ####################################################php#########################################################
 
