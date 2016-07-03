@@ -126,7 +126,7 @@ configure() {
 	return 0
 }
 #############################################mysql######################################
-if [$with_out_mysql -eq 0]
+if [ $with_out_mysql -eq 0 ]
 then	
 	if [ ! `cat /etc/group | grep mysql` ]
 	then
@@ -177,7 +177,7 @@ then
 	chown -R mysql:mysql /usr/local/Cellar/mysql
 	cp ./mysql-5.7.12/support-files/my-default.cnf /usr/local/etc/my.cnf
 	chown mysql:mysql /usr/local/etc/my.cnf
-	chmod -R 777 /usr/local/Cellar/mysql
+	#chmod -R 777 /usr/local/Cellar/mysql
 
 	echo "[client]" > /usr/local/etc/my.cnf
 	echo "port = 3306" >> /usr/local/etc/my.cnf
@@ -189,8 +189,8 @@ then
 	echo "datadir  = /usr/local/Cellar/mysql/data" >> /usr/local/etc/my.cnf
 
 	echo 'PATH=/usr/local/Cellar/mysql/bin:$PATH' >> "${HOME}/.profile"
-	source "${HOME}/.profile"
-	/usr/local/Cellar/mysql/bin/mysqld  --initialize --initialize-file=/usr/local/etc/my.cnf --user=mysql --basedir=/usr/local/Cellar/mysql --datadir=/usr/local/Cellar/mysql/data/ --explicit_defaults_for_timestamp 2> ./mysql-password
+	#source "${HOME}/.profile"
+	/usr/local/Cellar/mysql/bin/mysqld  --initialize --user=mysql --basedir=/usr/local/Cellar/mysql --datadir=/usr/local/Cellar/mysql/data/ --explicit_defaults_for_timestamp 2> ./mysql-password
 
 	rm -rf $2 ./mysql-5.7.12
 fi	
@@ -301,7 +301,8 @@ cp "${configure_path}/php-5.6.22/php.ini-development" /usr/local/etc/php5/
 
 
 echo "-------------------------------------------"
-echo "it's end of the configure,**warning**"
+echo "it's end of the configure"
+echo "**warning**"
 echo "There is the initializing password of mysql:"
 echo "${configure_path}/mysql-password"
 echo "There is the config file of PHP and nginx:"
