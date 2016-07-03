@@ -50,11 +50,12 @@ do
 			;;
 		-h|--help)
 			echo "params:"
-			echo "--with-change-source     set up your apt-get resource to Chinese resource"
-			echo "--with-out-mysql        do not configure mysql"
-			echo "-h, --help		   display this help and exit"
-			echo "-u, --with-user 		the user of nginx and php-fpm,default:_www"
-			echo "-g, --with-group 		the group of nginx and php-fpm,default:_www"
+			echo "--with-change-source      set up your apt-get resource to Chinese resource"
+			echo "--with-out-mysql          do not configure mysql"
+			echo "--with-mssql              do not configure mysql"
+			echo "-h, --help		        display this help and exit"
+			echo "-u, --with-user 	       	the user of nginx and php-fpm,default:_www"
+			echo "-g, --with-group 		    the group of nginx and php-fpm,default:_www"
 			exit 0
 			;;
 		--)
@@ -118,8 +119,8 @@ configure() {
 	./configure $3
 	make && make install
 	cd ../
-	if [ $4 != 'pcre' -o $4 != 'php5' ]
-		then
+	if [ $4 != 'pcre' -a $4 != 'php5' ]
+	then
 		rm -rf $2
 	fi
 	return 0
@@ -138,7 +139,7 @@ then
 
 	tar -xf mysql-5.7.12.tar.gz
 		if [ $? -ne 0 ]
-			then	
+		then	
 			echo "tar mysql error"
 			exit
 		fi
