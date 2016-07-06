@@ -39,23 +39,20 @@ do
 		--with-change-source)
 			change_source=1
 			shift
-			shift
 			;;
 		--with-out-mysql)
 			with_out_mysql=1
 			shift
-			shift
 			;;
 		--with-mssql)
 			with_mssql=1
-			shift
 			shift
 			;;
 		-h|--help)
 			echo "params:"
 			echo "--with-change-source      set up your apt-get resource to Chinese resource"
 			echo "--with-out-mysql          do not configure mysql"
-			echo "--with-mssql              do not configure mysql"
+			echo "--with-mssql              configure php with pdo-dblib"
 			echo "-h, --help		        display this help and exit"
 			echo "-u, --with-user 	       	the user of nginx and php-fpm,default:_www"
 			echo "-g, --with-group 		    the group of nginx and php-fpm,default:_www"
@@ -195,7 +192,7 @@ then
 	#source "${HOME}/.profile"
 	/usr/local/Cellar/mysql/bin/mysqld  --initialize --user=mysql --basedir=/usr/local/Cellar/mysql --datadir=/usr/local/Cellar/mysql/data/ --explicit_defaults_for_timestamp 2> ./mysql-password
 
-	rm -rf $2 ./mysql-5.7.12
+	rm -rf ./mysql-5.7.12
 fi	
 #############################################mysql######################################
 ################################################libxml2############################################################
