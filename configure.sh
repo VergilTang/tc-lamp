@@ -39,13 +39,16 @@ do
 		--with-change-source)
 			change_source=1
 			shift
+			shift
 			;;
 		--with-out-mysql)
 			with_out_mysql=1
 			shift
+			shift
 			;;
 		--with-mssql)
 			with_mssql=1
+			shift
 			shift
 			;;
 		-h|--help)
