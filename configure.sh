@@ -251,7 +251,7 @@ if [ ! `id -u ${nginx_fpm_user}` ]
 	then
 	useradd ${nginx_fpm_user} -r -g 1002
 fi	
-configure 'nginx-1.8.1.tar.gz' './nginx-1.8.1' "--prefix=/usr/local/Cellar/nginx --conf-path=/usr/local/etc/nginx/nginx.conf --user=${nginx_fpm_user} --group=${nginx-fpm_group} --with-openssl=../openssl-1.0.2g --with-pcre=../pcre-8.38" 'nginx'
+configure 'nginx-1.8.1.tar.gz' './nginx-1.8.1' "--prefix=/usr/local/Cellar/nginx --conf-path=/usr/local/etc/nginx/nginx.conf --user=${nginx_fpm_user} --group=${nginx_fpm_group} --with-openssl=../openssl-1.0.2g --with-pcre=../pcre-8.38" 'nginx'
 if [ -x /usr/local/Cellar/nginx/sbin/nginx ]
 	then
 	path=sbin/nginx
