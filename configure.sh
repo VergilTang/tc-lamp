@@ -190,7 +190,7 @@ then
 
 	echo 'PATH=/usr/local/Cellar/mysql/bin:$PATH' >> "${HOME}/.profile"
 	#source "${HOME}/.profile"
-	/usr/local/Cellar/mysql/bin/mysqld  --initialize --user=mysql --basedir=/usr/local/Cellar/mysql --datadir=/usr/local/Cellar/mysql/data/ --explicit_defaults_for_timestamp 2> ./mysql-password
+	/usr/local/Cellar/mysql/bin/mysqld  --initialize --user=mysql --basedir=/usr/local/Cellar/mysql --datadir=/usr/local/Cellar/mysql/data/ --explicit_defaults_for_timestamp 2>> ./mysql-password 1>> ./mysql-password
 
 	rm -rf ./mysql-5.7.12
 fi	
@@ -303,8 +303,11 @@ cp "${configure_path}/php-5.6.22/php.ini-development" /usr/local/etc/php5/
 echo "-------------------------------------------"
 echo "it's end of the configure"
 echo "**warning**"
-echo "There is the initializing password of mysql:"
-echo "${configure_path}/mysql-password"
+if [ $with_out_mysql -ne 1 ]
+then 
+	echo "There is the initializing password of mysql:"
+	echo "${configure_path}/mysql-password"
+fi
 echo "There is the config file of PHP and nginx:"
 echo "/usr/local/etc"
 echo "please run those command in command line:"
